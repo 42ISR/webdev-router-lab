@@ -1,34 +1,45 @@
-import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 export default function Header() {
-  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  function handleSearchKeyDown(e) {
+    if (e.key === 'Enter') {
+      console.log('Search query:', e.target.value);
+      const query = e.target.value.trim();
+      if (query) {
+        navigate('/search?q=' + encodeURIComponent(query));
+        e.target.value = '';
+      }
+    }
   }
 
   return (
     <header className="header">
       <div className="header-inner">
-        <a href="/" className="logo">
+        <NavLink to="/" end className="logo">
           <span className="logo-icon">▶</span>
           <span>MovieBox</span>
-        </a>
+        </NavLink>
 
         <nav className="nav">
-          <a href="/" className="nav-item">Главная</a>
-          <a href="/movies" className="nav-item">Фильмы</a>
-          <a href="/about" className="nav-item">О проекте</a>
+          <NavLink className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`} to="/" end>
+            Главная
+          </NavLink>
+          <NavLink className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`} to="/movies">
+            Фильмы
+          </NavLink>
+          <NavLink className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`} to="/about">
+            О проекте
+          </NavLink>
+          <NavLink className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`} to="/contacts">
+            Контакты
+          </NavLink>
         </nav>
 
-        <form className="search" onSubmit={handleSubmit}>
-          <span className="search-icon">⌕</span>
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Поиск фильмов"
-          />
-        </form>
+        <div className="header-search">
+          <input type="text" onKeyDown={handleSearchKeyDown} placeholder="Поиск фильмов" />
+        </div>
       </div>
     </header>
   );
